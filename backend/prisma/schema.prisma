@@ -1,30 +1,42 @@
-
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../generated/prisma"
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
-model User  {
-  id       Int   @id @default(autoincrement())
+model User {
+  id        Int      @id @default(autoincrement())
   name      String
   email     String   @unique
   password  String
-  roles     Role[]   @relation("UserRoles", references: [id])
+  roles     UserRole[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-   
 }
 
 model Role {
-  id       Int      @id @default(autoincrement())
-  name     String   @unique
-  permissions String[] 
-  users    User[]
+  id          Int         @id @default(autoincrement())
+  name        String      @unique
+  permissions Json        // Using JSON instead of String[] for MySQL
+  userRoles   UserRole[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model UserRole {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  roleId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([userId, roleId])
+  @@index([userId])
+  @@index([roleId])
 }
