@@ -1,6 +1,7 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  // Use the default output so @prisma/client initializes correctly in node_modules
+  // (do not set a custom `output` unless you explicitly import from that path)
 }
 
 datasource db {

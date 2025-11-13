@@ -1,10 +1,13 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-// import prisma from "./config/prisma.js";
 
-
+// Load environment variables before importing Prisma
 dotenv.config();
+
+// Import Prisma after dotenv so DATABASE_URL is available during module init
+const prismaModule = await import("./config/prisma.js");
+const prisma = prismaModule.default;
 
 
 const app= express();
