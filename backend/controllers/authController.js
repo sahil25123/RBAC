@@ -27,6 +27,23 @@ export const registerController = async(req, res) =>{
         const salt = await bcrypt.genSalt(10);
         const hashpassword = await bcrypt.hash(password , salt)
 
+        const defaultRole = await prisma.role.findUnique({ where : {name : "User"}});
+
+        if(!defaultRole){
+            return res.status(500).json({ status :false , message : "Default role not found in database"})
+
+        }
+        const user = await prisma.user.create ({
+            data : {
+                name , email , password :hashpassword , 
+                role : {
+                    connect : { id : defaultRole.id}
+                } , 
+                includes : {role : true}
+            }
+        })
+        res.status(201).json({message : "User Registerion" , user : { id : user.id , name : user.name , email : user.email , roles : user.roles}})
+
 
     }
     catch(e){
