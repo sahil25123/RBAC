@@ -14,14 +14,11 @@ export const loginController = async(req , res) =>{
     catch(e){
         return res.status(404).json({message: "Error in the Login Controller"})
     }
-
-
 }
 
 export const registerController = async(req, res) =>{
 
     try {
-    
         const { name , email , password } = req.body;
         if(!name || email || password) {
             res.status(400).json({message : "Missing Fields"})
